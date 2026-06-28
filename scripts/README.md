@@ -4,15 +4,16 @@ Use this script to validate a subscription vending request against the contract 
 
 ## Input files
 
-- Contract schema: `../contracts/subscription-vending.contract.schema.json`
-- Sample request: `../contracts/request.prod.example.json`
+- Request schema: `../schemas/subscription-vending.request.schema.json`
+- Sample request: `../requests/request.prod.example.json`
+- Production intake drop zone: `../requests/prod/incoming/`
 
 ## Command
 
 ```powershell
 python .\scripts\generate_tfvars.py `
-  --schema .\contracts\subscription-vending.contract.schema.json `
-  --request .\contracts\request.prod.example.json `
+  --schema .\schemas\subscription-vending.request.schema.json `
+  --request .\requests\prod\incoming\request-20260629-CHG123456.json `
   --out .\examples\prod\terraform.tfvars
 ```
 

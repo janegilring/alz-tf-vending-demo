@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://contoso.example/schemas/subscription-vending.contract.schema.json",
-  "title": "Subscription Vending Contract",
+  "$id": "https://contoso.example/schemas/subscription-vending.request.schema.json",
+  "title": "Subscription Vending Request Schema",
   "type": "object",
   "additionalProperties": false,
   "required": [

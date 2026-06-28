@@ -38,6 +38,6 @@ terraform apply -auto-approve
 
 The JSON schema for the request contract is at:
 
-- `../../contracts/subscription-vending.contract.schema.json`
+- `../../schemas/subscription-vending.request.schema.json`
 
 Use it in your request pipeline to validate incoming subscription requests before creating `tfvars` files.

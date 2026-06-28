@@ -1,0 +1,110 @@
+name: Process Intake Requests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "requests/prod/incoming/**/*.json"
+      - "schemas/subscription-vending.request.schema.json"
+      - "scripts/generate_tfvars.py"
+  pull_request:
+    paths:
+      - "requests/prod/incoming/**/*.json"
+      - "schemas/subscription-vending.request.schema.json"
+      - "scripts/generate_tfvars.py"
+  workflow_dispatch:
+    inputs:
+      request_file:
+        description: "Optional single request file to process (for example requests/prod/incoming/request-20260629-CHG123456.json)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  process-intake-requests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.0"
+
+      - name: Determine request files to process
+        id: files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.request_file }}" ]]; then
+            if [[ ! -f "${{ inputs.request_file }}" ]]; then
+              echo "Input request file not found: ${{ inputs.request_file }}"
+              exit 1
+            fi
+            printf "%s\n" "${{ inputs.request_file }}" > request_files.txt
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" \
+              | grep -E '^requests/prod/incoming/.+\.json$' > request_files.txt || true
+          else
+            git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" \
+              | grep -E '^requests/prod/incoming/.+\.json$' > request_files.txt || true
+          fi
+
+          if [[ ! -s request_files.txt ]]; then
+            echo "has_files=false" >> "$GITHUB_OUTPUT"
+            echo "No incoming request files to process."
+            exit 0
+          fi
+
+          echo "Request files:"
+          cat request_files.txt
+          echo "has_files=true" >> "$GITHUB_OUTPUT"
+
+      - name: Terraform syntax validation
+        if: steps.files.outputs.has_files == 'true'
+        shell: bash
+        run: |
+          terraform -chdir=examples/prod init -backend=false
+          terraform -chdir=examples/prod validate
+
+      - name: Generate tfvars for each request file
+        if: steps.files.outputs.has_files == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p generated-tfvars
+
+          while IFS= read -r request_file; do
+            [[ -z "$request_file" ]] && continue
+
+            request_name="$(basename "$request_file" .json)"
+            out_file="generated-tfvars/${request_name}.tfvars"
+
+            python scripts/generate_tfvars.py \
+              --schema schemas/subscription-vending.request.schema.json \
+              --request "$request_file" \
+              --out "$out_file"
+
+            echo "Generated: $out_file"
+          done < request_files.txt
+
+      - name: Upload generated tfvars artifacts
+        if: steps.files.outputs.has_files == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-tfvars
+          path: generated-tfvars/*.tfvars
+          if-no-files-found: error
