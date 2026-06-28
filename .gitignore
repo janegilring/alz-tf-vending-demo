@@ -1,0 +1,34 @@
+# Terraform local cache and dependency artifacts
+**/.terraform/*
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Terraform lock info for crash recovery
+crash.log
+crash.*.log
+
+# Terraform variable files that may contain secrets or tenant-specific values
+*.tfvars
+*.tfvars.json
+
+# Ignore generated tfvars but keep examples
+!*.tfvars.example
+
+# Terraform CLI config files
+.terraformrc
+terraform.rc
+
+# Plan output files
+*.tfplan
+*.plan
+
+# Module override files (local-only)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Optional: CLI generated debug output
+*.tflog
