@@ -18,8 +18,8 @@ Use one file per request with a stable, sortable name:
 
 1. Intake system writes a validated request JSON into `requests/prod/incoming/`.
 2. GitHub Actions workflow `.github/workflows/process-intake-requests.yml` detects changed JSON files and runs the generator script.
-3. Script validates the payload against the request schema and generates `examples/prod/terraform.tfvars`.
-4. Terraform plan/apply runs from `examples/prod`.
+3. Script validates the payload against the request schema and generates `prod/terraform.tfvars`.
+4. Terraform plan/apply runs from `prod`.
 
 ## GitHub Actions output
 
@@ -32,7 +32,7 @@ Use one file per request with a stable, sortable name:
 python .\scripts\generate_tfvars.py `
   --schema .\schemas\subscription-vending.request.schema.json `
   --request .\requests\prod\incoming\request-20260629-CHG123456.json `
-  --out .\examples\prod\terraform.tfvars
+  --out .\prod\terraform.tfvars
 ```
 
 ## Operational notes

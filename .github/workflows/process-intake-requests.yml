@@ -77,8 +77,8 @@ jobs:
         if: steps.files.outputs.has_files == 'true'
         shell: bash
         run: |
-          terraform -chdir=examples/prod init -backend=false
-          terraform -chdir=examples/prod validate
+          terraform -chdir=prod init -backend=false
+          terraform -chdir=prod validate
 
       - name: Generate tfvars for each request file
         if: steps.files.outputs.has_files == 'true'

@@ -14,14 +14,14 @@ Use this script to validate a subscription vending request against the contract 
 python .\scripts\generate_tfvars.py `
   --schema .\schemas\subscription-vending.request.schema.json `
   --request .\requests\prod\incoming\request-20260629-CHG123456.json `
-  --out .\examples\prod\terraform.tfvars
+  --out .\prod\terraform.tfvars
 ```
 
 ## What this does
 
 - Validates required request fields and key constraints used by the vending contract
 - Enforces connectivity-specific requirements
-- Generates a `terraform.tfvars` file compatible with the files under `examples/prod`
+- Generates a `terraform.tfvars` file compatible with the files under `prod`
 
 ## Notes
 

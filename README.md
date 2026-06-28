@@ -19,10 +19,10 @@ It includes:
 - `schemas/subscription-vending.request.schema.json`
   - Request validation schema.
 - `scripts/generate_tfvars.py`
-  - Validates request JSON and generates `examples/prod/terraform.tfvars`.
+  - Validates request JSON and generates `prod/terraform.tfvars`.
 - `scripts/README.md`
   - Script usage and examples.
-- `examples/prod/`
+- `prod/`
   - Terraform implementation using `terraform-lz-vending` module.
 - `.github/workflows/process-intake-requests.yml`
   - Workflow that detects intake file changes and generates tfvars artifacts.
@@ -33,7 +33,7 @@ It includes:
 2. GitHub Actions workflow `process-intake-requests` detects changed request files.
 3. The workflow runs `scripts/generate_tfvars.py` with the schema in `schemas/`.
 4. Generated tfvars files are uploaded as the `generated-tfvars` workflow artifact.
-5. Terraform plan/apply can then be executed from `examples/prod` (manually or in a controlled deployment workflow).
+5. Terraform plan/apply can then be executed from `prod` (manually or in a controlled deployment workflow).
 
 ## Architecture diagram
 
@@ -44,7 +44,7 @@ flowchart LR
   C --> D[Schema Validation\nschemas/subscription-vending.request.schema.json]
   D --> E[Generator Script\nscripts/generate_tfvars.py]
   E --> F[Generated Artifact\ngenerated-tfvars/*.tfvars]
-  F --> G[Terraform Config\nexamples/prod]
+  F --> G[Terraform Config\nprod]
   G --> H[Manual/Controlled\nplan and apply]
 ```
 
@@ -56,14 +56,14 @@ flowchart LR
 python .\scripts\generate_tfvars.py `
   --schema .\schemas\subscription-vending.request.schema.json `
   --request .\requests\request.prod.example.json `
-  --out .\examples\prod\terraform.tfvars
+  --out .\prod\terraform.tfvars
 ```
 
 ### 2) Validate Terraform configuration
 
 ```powershell
-terraform -chdir=examples/prod init -backend=false
-terraform -chdir=examples/prod validate
+terraform -chdir=prod init -backend=false
+terraform -chdir=prod validate
 ```
 
 ## GitHub Actions quick test

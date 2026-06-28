@@ -1,4 +1,4 @@
-# Terraform Landing Zone Vending (prod example)
+# Terraform Landing Zone Vending (prod)
 
 This example implements a subscription vending contract with `Azure/avm-ptn-alz-sub-vending/azure` and applies the following during creation:
 
@@ -34,10 +34,10 @@ terraform apply -auto-approve
 - `hub_spoke`: creates a spoke VNet and peers it to `hub_network_resource_id`.
 - `vwan`: creates a spoke VNet and connects it to `vwan_hub_resource_id`.
 
-## Contract schema
+## Request schema
 
 The JSON schema for the request contract is at:
 
-- `../../schemas/subscription-vending.request.schema.json`
+- `../schemas/subscription-vending.request.schema.json`
 
 Use it in your request pipeline to validate incoming subscription requests before creating `tfvars` files.
