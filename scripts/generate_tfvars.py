@@ -71,7 +71,7 @@ def _validate_contract_schema(data: Dict[str, Any]) -> None:
         _expect_required(subscription, sub_key)
     _validate_regex(
         subscription["billing_scope"],
-        r"^/providers/Microsoft\\.Billing/billingAccounts/.+",
+        r"^/providers/Microsoft\.Billing/billingAccounts/.+",
         "subscription.billing_scope",
     )
 
@@ -94,7 +94,7 @@ def _validate_contract_schema(data: Dict[str, Any]) -> None:
         )
         _validate_regex(
             policy_definition_id,
-            r"^/providers/Microsoft\\.Authorization/policy(Definitions|SetDefinitions)/.+",
+            r"^/providers/Microsoft\.Authorization/policy(Definitions|SetDefinitions)/.+",
             f"governance.policy_assignments[{idx}].policy_definition_id",
         )
 
